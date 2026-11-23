@@ -47,4 +47,44 @@ elif "registerPlugin(PhotoPickerPlugin.class)" not in text:
     )
 
 main.write_text(text, encoding="utf-8")
+
+# Ajustes de navegación de la aplicación contenedora (sin alterar la lógica del relevamiento).
+html_file = Path("web/index.html")
+html_text = html_file.read_text(encoding="utf-8")
+
+html_replacements = [
+    (
+        ".admin-subhead{display:flex;align-items:center;gap:14px;margin-bottom:20px}",
+        ".admin-subhead{display:flex;flex-direction:column;align-items:flex-start;gap:12px;margin:0 0 20px;padding:10px 0 0}"
+    ),
+    (
+        "#adminBack{border:0;border-radius:10px;background:#245c43;color:white;padding:12px 14px;font-weight:700}",
+        "#adminSubTitle{order:-1}\\n#adminBack{border:0;border-radius:10px;background:#245c43;color:white;padding:11px 18px;font-weight:800;font-size:14px;min-height:44px;box-shadow:0 2px 7px #173d2b22}"
+    ),
+    (
+        "<header><button id=\"backToAdminMenu\" type=\"button\">← MENÚ PRINCIPAL</button><h1>Relevamiento Comuna 4</h1><p>Formulario digital para completar el PDF original</p></header>",
+        "<header><h1>Relevamiento Comuna 4</h1><p>Formulario digital para completar el PDF original</p><button id=\"backToAdminMenu\" type=\"button\">← VOLVER AL MENÚ PRINCIPAL</button></header>"
+    ),
+    (
+        "#legacyApp header{position:relative;padding-top:56px}",
+        "#legacyApp header{position:sticky;top:0;z-index:5;padding:13px 14px}"
+    ),
+    (
+        "#backToAdminMenu{position:absolute;top:10px;left:12px;border:1px solid #ffffff88;background:#ffffff18;color:#fff;border-radius:8px;padding:7px 10px;font-weight:700;font-size:12px}",
+        "#backToAdminMenu{display:inline-flex;margin-top:12px;border:1px solid #ffffff88;background:#ffffff18;color:#fff;border-radius:9px;padding:10px 15px;min-height:42px;font-weight:800;font-size:13px}"
+    ),
+    (
+        " document.getElementById('backToAdminMenu').addEventListener('click',showHome);\\n showHome();",
+        " document.getElementById('backToAdminMenu').addEventListener('click',showHome);\\n // El botón físico o gesto Atrás de Android vuelve siempre al menú principal.\\n window.addEventListener('c4hardwareback',function(){showHome();});\\n showHome();"
+    )
+]
+for old, new in html_replacements:
+    if old in html_text:
+        html_text = html_text.replace(old, new, 1)
+    elif new not in html_text:
+        raise SystemExit(f"No se encontró el fragmento esperado para aplicar navegación: {old[:90]}")
+
+html_file.write_text(html_text, encoding="utf-8")
+print("Botones de volver y navegación al menú principal configurados.")
+
 print(f"Plugins nativos instalados y registrados en {main}")

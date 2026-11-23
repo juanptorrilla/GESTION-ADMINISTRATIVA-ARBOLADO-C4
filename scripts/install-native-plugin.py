@@ -46,6 +46,25 @@ elif "registerPlugin(PhotoPickerPlugin.class)" not in text:
         1
     )
 
+# El botón físico/gesto Atrás de Android vuelve al menú principal de la app.
+back_handler = """
+    @Override
+    public void onBackPressed() {
+        if (getBridge() != null && getBridge().getWebView() != null) {
+            getBridge().getWebView().evaluateJavascript(
+                "window.dispatchEvent(new Event('c4hardwareback'))", null
+            );
+        } else {
+            super.onBackPressed();
+        }
+    }
+"""
+if "c4hardwareback" not in text:
+    closing = text.rfind("}")
+    if closing < 0:
+        raise SystemExit("No se encontró el cierre de MainActivity")
+    text = text[:closing] + back_handler + text[closing:]
+
 main.write_text(text, encoding="utf-8")
 
 # Ajustes de navegación de la aplicación contenedora (sin alterar la lógica del relevamiento).

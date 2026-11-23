@@ -1,0 +1,11 @@
+{
+  "appId": "ar.gob.comuna4.gestionarbolado",
+  "appName": "Gestión Arbolado C4",
+  "webDir": "web",
+  "bundledWebRuntime": false,
+  "plugins": {
+    "CapacitorHttp": {
+      "enabled": true
+    }
+  }
+}

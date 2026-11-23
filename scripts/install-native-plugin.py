@@ -52,7 +52,7 @@ back_handler = """
     public void onBackPressed() {
         if (getBridge() != null && getBridge().getWebView() != null) {
             getBridge().getWebView().evaluateJavascript(
-                "window.dispatchEvent(new Event('c4hardwareback'))", null
+                "(function(){var legacy=document.getElementById('legacyApp');if(legacy&&getComputedStyle(legacy).display!=='none'){var b=document.getElementById('backToAdminMenu');if(b)b.click();}else{var b=document.getElementById('adminBack');if(b)b.click();}})()", null
             );
         } else {
             super.onBackPressed();
@@ -100,6 +100,9 @@ html_replacements = [
 for old, new in html_replacements:
     if old in html_text:
         html_text = html_text.replace(old, new, 1)
+    elif old.startswith(" document.getElementById('backToAdminMenu')"):
+        # El botón físico ejecuta el clic directamente desde MainActivity.
+        pass
     elif new not in html_text:
         raise SystemExit(f"No se encontró el fragmento esperado para aplicar navegación: {old[:90]}")
 

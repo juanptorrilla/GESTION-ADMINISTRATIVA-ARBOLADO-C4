@@ -22,10 +22,16 @@ jobs:
           java-version: 21
       - name: Instalar dependencias
         run: npm install
+      - name: Descargar icono institucional de la app inspectores
+        run: |
+          mkdir -p assets
+          curl -fL https://raw.githubusercontent.com/juanptorrilla/RELEVAMIENTO-ARBOLADO---C4/autoria-v7/resources/icon.png -o assets/icon.png
       - name: Preparar archivos web
         run: npm run build
       - name: Crear proyecto Android
         run: npx cap add android
+      - name: Generar iconos Android
+        run: npx capacitor-assets generate --android
       - name: Instalar funciones nativas
         run: python scripts/install-native-plugin.py
       - name: Sincronizar Capacitor
